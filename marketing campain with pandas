@@ -1,5 +1,5 @@
 
--------------------------------------------------------------------
+
 #calculating conversion rate
 # Calculate the number of people we marketed to
 total = marketing['user_id'].nunique()
