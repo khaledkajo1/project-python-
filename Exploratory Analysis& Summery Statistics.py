@@ -38,7 +38,18 @@ subscribers = marketing[marketing['converted'] == True]\
 language_conversion_rate = subscribers/total
 print(language_conversion_rate)
 --------------------------------------------------------------------
-Visualize conversion rate by language
+#Aggregating by date
+# Group by date_served and count unique users
+total = marketing.groupby(['date_served'])['user_id'].nunique()
+
+# Group by date_served and count unique converted users
+subscribers = marketing[marketing['converted'] ==True].groupby(['date_served'])['user_id'].nunique()
+
+# Calculate the conversion rate per day
+daily_conversion_rate = subscribers/total
+print(daily_conversion_rate)
+-------------------------------------------------------------------------
+#Visualize conversion rate by language
 # Create a bar chart using language_conversion_rate DataFrame
 language_conversion_rate.plot(kind = 'bar')
 
@@ -51,6 +62,19 @@ plt.ylabel('conversion rate (%)', size = 14)
 plt.show()
 
 -----------------------------------------------------------------
+#Creating daily conversion rate DataFrame
+# Group by date_served and count unique users
+total = marketing.groupby(['date_served'])['user_id']\
+                     .nunique()
+
+# Group by date_served and calculate subscribers
+subscribers = marketing[marketing['converted'] == True]\
+                         .groupby(['date_served'])\
+                         ['user_id'].nunique()
+
+# Calculate the conversion rate for all languages
+daily_conversion_rates = subscribers/total
+--------------------------------------------------------------------
 #Setting up our data to visualize daily conversion
 # Reset index to turn the results into a DataFrame
 daily_conversion_rate = pd.DataFrame(daily_conversion_rates.reset_index())
@@ -59,6 +83,20 @@ daily_conversion_rate = pd.DataFrame(daily_conversion_rates.reset_index())
 daily_conversion_rate.columns = ['date_served', 
                               'conversion_rate']
 -----------------------------------------------------------------------
+
+# Create a line chart using daily_conversion_rate
+daily_conversion_rate.plot('date_subscribed','conversion_rate')
+
+plt.title('Daily conversion rate\n', size = 16)
+plt.ylabel('Conversion rate (%)', size = 14)
+plt.xlabel('Date', size = 14)
+
+# Set the y-axis to begin at 0
+plt.ylim(0)
+
+# Display the plot
+plt.show()
+-----------------------------------------------------------------------------
 #Marketing channels across age groups
 channel_age = marketing.groupby(['marketing_channel', 'age_group'])\
                                 ['user_id'].count()
@@ -78,6 +116,12 @@ plt.show()
 
 ---------------------------------------------------------------------------
 #Grouping and counting by multiple columns
+# Count the subs by subscribing channel and day
+retention_total = marketing.groupby(['date_subscribed',
+                                     'subscribing_channel'])['user_id'].nunique()
+
+# Print results
+print(retention_total.head())
 # Count the retained subs by subscribing channel and date subscribed
 retention_subs = marketing[marketing['is_retained'] == True]\
                            .groupby(['date_subscribed',
